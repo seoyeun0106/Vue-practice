@@ -1,12 +1,12 @@
 <template>
 <div class="todo-container">
   <ul class="todo-li">
-    <li v-for="{id,text} in todos" :key="id" class="todo-item">
-    <Todo :text="text" :id="id" @delete-func="onDel"/>
+    <li v-for="todo in todos" :key="todo.id" class="todo-item">
+    <Todo :todo="todo" @delete-func="onDel"/>
     </li>
   </ul>
   <form class="form" @submit.prevent="onSubmit">
-    <input type="text" class="input" v-model="inputVal">
+    <input type="text" class="input" :value="text" @input="text= $event.target.value">
     <button class="btn">꾹</button>
   </form>
 </div>
@@ -23,27 +23,30 @@ export default {
     return{
       id:1,
       KEY:'todos',
-      todos:[{id:0,text:"UI 구현 완료하기"},{id:1,text:"API post후 res받아오기"}],
-      inputVal:""
+      todos:[{id:0,text:"UI 구현 완료하기",checked:true},{id:1,text:"API post후 res받아오기",checked:false}],
+      text:'',
+      checked:false
     }
   },
   methods: {
-    onSubmit(){
-      if(this.inputVal){
+    onSubmit(e){
       this.id++;
+      console.log(e.target[0].value)
       const todoItem = {
         id: this.id,
-        text: this.inputVal
+        text: e.target[0].value,
+        checked: this.checked
       }
       this.todos.push(todoItem)
-      this.inputVal="" }    
-    },
+       }    
+  ,
     onDel(data){
       this.todos = this.todos.filter(({id})=>{
         return id !==data
       })
-    }
-    
+    },
+  //자식에서 부모로 값 변경 
+  // 
   },
   watch:{
       todos:{
@@ -54,9 +57,9 @@ export default {
     },
     getTodo:{
       handler(){
-        const stringTodo=window.localStorage.getItem(this.KEY);
-        if(stringTodo){
-        const parsedTodo = JSON.parse(stringTodo);
+        const stringTodo=localStorage.getItem(this.KEY);
+        const parsedTodo = JSON.parse(stringTodo)
+        if(parsedTodo.length){
         this.todos = parsedTodo;
         this.id=this.todos[this.todos.length-1].id
       }

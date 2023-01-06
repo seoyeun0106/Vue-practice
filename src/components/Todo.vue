@@ -1,7 +1,7 @@
 <template>
     <div class="todoWrapper">
-    <input type="checkbox" name="" id="" v-model="bool">
-    <div :class="{'checked':bool}">{{ text }}</div>
+    <input type="checkbox">
+    <div :class="{'checked':todo.checked}">{{ todo.text }}</div>
     <button class="delBtn" @click="onDelete">X</button>
     </div>
 </template>
@@ -9,13 +9,7 @@
 export default{
     name:'To-do',
     props:{
-        text:{
-            type: String,
-            required: true
-        },
-        id:{
-            type:Number
-        }
+       todo:Object
     }, 
     data(){
         return{
@@ -24,7 +18,7 @@ export default{
     },
     methods:{
         onDelete(){
-            this.$emit('deleteFunc',this.id)
+            this.$emit('deleteFunc',this.todo.id)
         }
     }   
 }
