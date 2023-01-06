@@ -2,7 +2,7 @@
 <div class="todo-container">
   <ul class="todo-li">
     <li v-for="{id,text} in todos" :key="id" class="todo-item">
-    <Todo :text="text" :id="id" @delete-func="onDel"/>
+    <Todo :text="text" :id="id" @delete-func="onDel" :getData="getData"/>
     </li>
   </ul>
   <form class="form" @submit.prevent="onSubmit">
@@ -23,8 +23,9 @@ export default {
     return{
       id:1,
       KEY:'todos',
-      todos:[{id:0,text:"UI 구현 완료하기"},{id:1,text:"API post후 res받아오기"}],
-      inputVal:""
+      todos:[{id:0,text:"UI 구현 완료하기",checked:true},{id:1,text:"API post후 res받아오기",checked:false}],
+      inputVal:"",
+      bool:false
     }
   },
   methods: {
@@ -33,7 +34,8 @@ export default {
       this.id++;
       const todoItem = {
         id: this.id,
-        text: this.inputVal
+        text: this.inputVal,
+        checked: this.bool
       }
       this.todos.push(todoItem)
       this.inputVal="" }    
@@ -42,7 +44,10 @@ export default {
       this.todos = this.todos.filter(({id})=>{
         return id !==data
       })
-    }
+    },
+   getData(){
+      return window.localStorage.getItem(this.KEY)
+   }
     
   },
   watch:{
@@ -55,8 +60,8 @@ export default {
     getTodo:{
       handler(){
         const stringTodo=window.localStorage.getItem(this.KEY);
-        if(stringTodo){
         const parsedTodo = JSON.parse(stringTodo);
+        if(parsedTodo.length){
         this.todos = parsedTodo;
         this.id=this.todos[this.todos.length-1].id
       }

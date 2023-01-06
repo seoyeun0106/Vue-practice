@@ -1,14 +1,15 @@
 <template>
-<TodoList></TodoList>
+<TodoApp></TodoApp>
 </template>
 <script>
-import TodoList from './components/TodoList.vue'
+import TodoApp from "./components/TodoApp.vue"
 export default {
-  name: 'App',
-  components: {
-    TodoList
-  }
+  name:"App",
+    components:{
+        TodoApp
+    }
 }
+
 </script>
 
 <style>

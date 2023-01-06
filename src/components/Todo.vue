@@ -1,6 +1,6 @@
 <template>
     <div class="todoWrapper">
-    <input type="checkbox" name="" id="" v-model="bool">
+    <input type="checkbox" name="" id="" @click="onCheck">
     <div :class="{'checked':bool}">{{ text }}</div>
     <button class="delBtn" @click="onDelete">X</button>
     </div>
@@ -15,17 +15,19 @@ export default{
         },
         id:{
             type:Number
-        }
-    }, 
+        },
+        getData:{
+            type:Function
+        }}, 
     data(){
         return{
             bool:false
         }
-    },
+            },
     methods:{
         onDelete(){
             this.$emit('deleteFunc',this.id)
-        }
+        },
     }   
 }
 </script>
