@@ -2,8 +2,8 @@
     <div>
         <div v-if="!isModifying">
         <div class="todoWrapper">
-    <input type="checkbox">
-    <div :class="{'checked':todo.checked}">{{ todo.text }}</div>
+    <input type="checkbox" @click="updateCheck" :checked="todo.checked">
+    <div :class="{'checked':todo.checked}" >{{ todo.text }}</div>
     <button @click="modifyText">수정하기</button>
     <button class="delBtn" @click="onDelete">X</button>
     </div>
@@ -22,7 +22,7 @@ export default{
     }, 
     data(){
         return{
-            bool:false,
+            isChecked:this.todo.checked,
             isModifying:false
         }
     },
@@ -34,13 +34,17 @@ export default{
             this.isModifying = true;
             this.$nextTick(function(){
                 this.$refs.input.focus()
-            })
-            console.dir(this.$refs.input.focus)
-          
+            })    
         },
         updateTodos(e){
             this.$emit('updateFunc',this.todo.id,e.target.value)
             this.isModifying = false
+        },
+        updateCheck(){
+            this.$emit('updateChecks',this.todo.id,!this.isChecked)
+            console.log(this.isChecked)
+            this.isChecked = ! this.isChecked
+            
         }
     }   
 }

@@ -2,7 +2,7 @@
 <div class="todo-container">
   <ul class="todo-li">
     <li v-for="todo in todos" :key="todo.id" class="todo-item">
-    <Todo :todo="todo" @delete-func="onDel" @update-func="updateTodo"/>
+    <Todo :todo="todo" @delete-func="onDel" @update-func="updateTodo" @update-checks="updateCheck"/>
     </li>
   </ul>
   <form class="form" @submit.prevent="onSubmit">
@@ -53,7 +53,15 @@ export default {
            todo.text = text
         } return todo
       })
-      console.log(this.todos)
+    },
+    updateCheck(data,isChecked){
+      this.todos = this.todos.map((todo)=>{
+        if(todo.id === data){
+          console.log(todo.checked,isChecked,"와앙")
+          todo.checked = isChecked
+        }
+        return todo
+      })
     }
 
   
