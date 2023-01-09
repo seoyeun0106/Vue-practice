@@ -31,7 +31,6 @@ export default {
   methods: {
     onSubmit(e){
       this.id++;
-      console.log(e.target[0].value)
       const todoItem = {
         id: this.id,
         text: e.target[0].value,
@@ -57,7 +56,6 @@ export default {
     updateCheck(data,isChecked){
       this.todos = this.todos.map((todo)=>{
         if(todo.id === data){
-          console.log(todo.checked,isChecked,"와앙")
           todo.checked = isChecked
         }
         return todo

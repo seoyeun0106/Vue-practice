@@ -9,7 +9,7 @@
     </div>
     </div>
     <div v-show="isModifying">
-        <input type="text" @keydown.enter="updateTodos" :value="todo.text" ref="input"/>
+        <input type="text" @keydown.enter="updateTodos" @blur="updateTodos" :value="todo.text" ref="input"/>
     </div>
     </div>
     
@@ -42,7 +42,6 @@ export default{
         },
         updateCheck(){
             this.$emit('updateChecks',this.todo.id,!this.isChecked)
-            console.log(this.isChecked)
             this.isChecked = ! this.isChecked
             
         }
