@@ -6,6 +6,7 @@
     <div :class="{'checked':todo.checked}" >{{ todo.text }}</div>
     <button @click="modifyText">수정하기</button>
     <button class="delBtn" @click="onDelete">X</button>
+    <div @click="js">{{ getDate  }}</div>
     </div>
     </div>
     <div v-show="isModifying">
@@ -15,6 +16,7 @@
     
 </template>
 <script>
+import dayjs from 'dayjs'
 export default{
     name:'To-do',
     props:{
@@ -23,7 +25,8 @@ export default{
     data(){
         return{
             isChecked:this.todo.checked,
-            isModifying:false
+            isModifying:false,
+            date:this.todo.date
         }
     },
     methods:{
@@ -38,14 +41,23 @@ export default{
         },
         updateTodos(e){
             this.$emit('updateFunc',this.todo.id,e.target.value)
-            this.isModifying = false
+            this.isModifying = false;
+
         },
         updateCheck(){
             this.$emit('updateChecks',this.todo.id,!this.isChecked)
             this.isChecked = ! this.isChecked
             
+        },js(e){
+            console.log(e.target)
         }
-    }   
+       
+    }  ,
+    computed:{
+        getDate(){
+            return dayjs(this.todo.date).format("YYYY년 MM월 DD일")
+        }
+    } 
 }
 </script>
 <style>

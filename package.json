@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.7",
     "reset-css": "^5.0.1",
     "sass": "^1.57.1",
     "sass-loader": "^13.2.0",

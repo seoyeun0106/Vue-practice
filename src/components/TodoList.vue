@@ -23,9 +23,10 @@ export default {
     return{
       id:1,
       KEY:'todos',
-      todos:[{id:0,text:"UI 구현 완료하기",checked:true},{id:1,text:"API post후 res받아오기",checked:false}],
+      todos:[{id:0,text:"UI 구현 완료하기",checked:true,date: new Date()},
+            {id:1,text:"API post후 res받아오기",checked:false,date: new Date()}],
       text:'',
-      checked:false
+      checked:false,
     }
   },
   methods: {
@@ -34,7 +35,8 @@ export default {
       const todoItem = {
         id: this.id,
         text: e.target[0].value,
-        checked: this.checked
+        checked: this.checked,
+        date: new Date()
       }
       this.todos.push(todoItem)
       this.text=''
@@ -49,7 +51,8 @@ export default {
     updateTodo(data,text){
       this.todos = this.todos.map((todo)=>{
          if(todo.id === data){
-           todo.text = text
+           todo.text = text;
+           todo.date = new Date()
         } return todo
       })
     },
