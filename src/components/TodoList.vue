@@ -2,7 +2,7 @@
 <div class="todo-container">
   <ul class="todo-li">
     <li v-for="todo in todos" :key="todo.id" class="todo-item">
-    <Todo :todo="todo" @delete-func="onDel"/>
+    <Todo :todo="todo" @delete-func="onDel" @update-func="updateTodo"/>
     </li>
   </ul>
   <form class="form" @submit.prevent="onSubmit">
@@ -38,6 +38,8 @@ export default {
         checked: this.checked
       }
       this.todos.push(todoItem)
+      this.text=''
+      
        }    
   ,
     onDel(data){
@@ -45,8 +47,16 @@ export default {
         return id !==data
       })
     },
-  //자식에서 부모로 값 변경 
-  // 
+    updateTodo(data,text){
+      this.todos = this.todos.map((todo)=>{
+         if(todo.id === data){
+           todo.text = text
+        } return todo
+      })
+      console.log(this.todos)
+    }
+
+  
   },
   watch:{
       todos:{
@@ -59,7 +69,7 @@ export default {
       handler(){
         const stringTodo=localStorage.getItem(this.KEY);
         const parsedTodo = JSON.parse(stringTodo)
-        if(parsedTodo.length){
+        if(stringTodo && parsedTodo.length){
         this.todos = parsedTodo;
         this.id=this.todos[this.todos.length-1].id
       }
