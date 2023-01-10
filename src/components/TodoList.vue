@@ -71,8 +71,7 @@ export default {
           set(checked){
         this.completeAll(checked)
         }
-      },
-      
+      },      
 },
   methods: {
     onSubmit(e){
@@ -84,8 +83,7 @@ export default {
         date: new Date()
       }
       this.todos.push(todoItem)
-      this.text=''
-      
+      this.text=''     
        }    
   ,
     onDel(data){
@@ -119,8 +117,7 @@ export default {
    },
    clearCompleted(){
       this.todos = this.todos.filter((todo)=>{return !todo.checked})      
-      }
-   
+      }   
   },
   watch:{
       todos:{
@@ -136,13 +133,11 @@ export default {
         if(stringTodo && parsedTodo.length){
         this.todos = parsedTodo;
         this.id=this.todos[this.todos.length-1].id
-      }
+        }
       },
       immediate:true
     }
-
-  },
-  
+  },  
 }
 </script>
 <style scoped>
