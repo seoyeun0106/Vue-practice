@@ -1,7 +1,14 @@
 <template>
 <div class="todo-container">
-  <ul class="todo-li">
-    <li v-for="todo in todos" :key="todo.id" class="todo-item">
+  <div class="todo-app_actions">
+    <div class="filters">
+      <button @click="changeFilter('all')">모든 항목 ( {{ total }} )</button>
+      <button @click="changeFilter('active')">해야 할 항목( {{ activeCount }} )</button>
+      <button @click="changeFilter('completed')">완료된 항목( {{ completedCount }} )</button>
+    </div>
+  </div>
+  <ul class="todo-li todo-app__list">
+    <li v-for="todo in filteredTodos" :key="todo.id" class="todo-item">
     <Todo :todo="todo" @delete-func="onDel" @update-func="updateTodo" @update-checks="updateCheck"/>
     </li>
   </ul>
@@ -9,6 +16,12 @@
     <input type="text" class="input" :value="text" @input="text= $event.target.value">
     <button class="btn">꾹</button>
   </form>
+</div>
+<div class="actions">
+  <input type="checkbox" v-model="allDone">
+  <button @click="clearCompleted">
+    완료된 항목 삭제
+  </button>
 </div>
 </template>
 
@@ -26,9 +39,41 @@ export default {
       todos:[{id:0,text:"UI 구현 완료하기",checked:true,date: new Date()},
             {id:1,text:"API post후 res받아오기",checked:false,date: new Date()}],
       text:'',
+      filter:"all",
       checked:false,
     }
   },
+  computed: {
+    filteredTodos(){
+      switch(this.filter){
+        case 'all':
+        default:
+          return this.todos
+        case 'active':
+          return this.todos.filter(todo=>!todo.checked)
+        case 'completed':
+          return this.todos.filter(todo=>todo.checked)
+        }
+      },
+      total(){
+        return this.todos.length
+      },
+      activeCount(){
+        return this.todos.filter(todo=>!todo.checked).length
+      },
+      completedCount(){
+        return this.total - this.activeCount
+      },
+      allDone:{
+          get(){
+        return this.total === this.completedCount && this.total > 0
+        },
+          set(checked){
+        this.completeAll(checked)
+        }
+      },
+      
+},
   methods: {
     onSubmit(e){
       this.id++;
@@ -63,9 +108,19 @@ export default {
         }
         return todo
       })
-    }
-
-  
+    },
+    changeFilter(filter){
+      this.filter = filter
+    },
+   completeAll(checked){
+    this.todos.forEach((todo)=>{
+        todo.checked = checked
+    })
+   },
+   clearCompleted(){
+      this.todos = this.todos.filter((todo)=>{return !todo.checked})      
+      }
+   
   },
   watch:{
       todos:{
