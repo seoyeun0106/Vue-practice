@@ -13,6 +13,9 @@ const routes =[
         name:"About",
         component: About
         
+    },{
+        path:"/todo/",
+        redirect:"/todo/all"
     }
 ];
 

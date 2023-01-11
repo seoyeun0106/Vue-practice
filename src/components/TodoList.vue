@@ -2,10 +2,10 @@
 <div class="todo-container todo-app">
   <div class="todo-app_actions">
     <div class="filters">
-      <button @click="changeFilter('all')">모든 항목 ( {{ total }} )</button>
-      <button @click="changeFilter('active')">해야 할 항목( {{ activeCount }} )</button>
-      <button @click="changeFilter('completed')">완료된 항목( {{ completedCount }} )</button>
-    </div>
+      <router-link to="all" class="link-btn">모든 항목({{ total }})</router-link>
+      <router-link to="active" class="link-btn">해야 할 항목({{ activeCount }})</router-link>
+      <router-link to="completed" class="link-btn">완료된 항목({{ completedCount }})</router-link>
+      </div>
   </div>
   <ul class="todo-li todo-app__list">
     <div class="actions clearfix todo-included">
@@ -38,7 +38,7 @@
 <script>
 import Todo from './Todo.vue';
 export default {
-  name: 'TodoList',
+  name: 'Todo-List',
   components:{
     Todo,
   },
@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     filteredTodos(){
-      switch(this.filter){
+      switch(this.$route.params.id){
         case 'all':
         default:
           return this.todos
@@ -117,9 +117,6 @@ export default {
         return todo
       })
     },
-    changeFilter(filter){
-      this.filter = filter
-    },
    completeAll(checked){
     this.todos = this.todos.map((todo)=>{
         todo.checked = checked
@@ -148,11 +145,22 @@ export default {
       },
       immediate:true
     }
-  },  
+  }, 
+  mounted(){
+        console.log(this.$route);
+        },  
 }
 </script>
 <style lang="scss">
 @import "../scss/style";
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+
 .todo-container{
   flex-grow: 1;
   min-width: 700px;
@@ -188,7 +196,11 @@ export default {
     background-color: #44544e;
     align-items: center;
     justify-content: center;
-    button{
+    .link-btn{
+      text-decoration:unset;
+      color:#1c332b
+    }
+    .router-link-active{
       color: white;
     }
 }
