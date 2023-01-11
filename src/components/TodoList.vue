@@ -1,5 +1,5 @@
 <template>
-<div class="todo-container">
+<div class="todo-container todo-app">
   <div class="todo-app_actions">
     <div class="filters">
       <button @click="changeFilter('all')">모든 항목 ( {{ total }} )</button>
@@ -8,21 +8,31 @@
     </div>
   </div>
   <ul class="todo-li todo-app__list">
+    <div class="actions clearfix todo-included">
+    <div class="float--left">
+     <label>
+        <input type="checkbox" v-model="allDone">
+        <span class="material-symbols-outlined icon">
+            check
+        </span>
+      </label>
+    </div>
+  <div class="float--right">
+    <button @click="clearCompleted">
+    완료된 항목 삭제
+  </button>
+  </div>
+</div>
     <li v-for="todo in filteredTodos" :key="todo.id" class="todo-item">
     <Todo :todo="todo" @delete-func="onDel" @update-func="updateTodo" @update-checks="updateCheck"/>
     </li>
   </ul>
   <form class="form" @submit.prevent="onSubmit">
-    <input type="text" class="input" :value="text" @input="text= $event.target.value">
+    <input type="text" placeholder="할 일을 추가하세요!" class="input todo-included" :value="text" @input="text= $event.target.value">
     <button class="btn">꾹</button>
   </form>
 </div>
-<div class="actions">
-  <input type="checkbox" v-model="allDone">
-  <button @click="clearCompleted">
-    완료된 항목 삭제
-  </button>
-</div>
+
 </template>
 
 <script>
@@ -66,7 +76,7 @@ export default {
       },
       allDone:{
           get(){
-        return this.total === this.completedCount && this.total > 0
+        return (this.total === this.completedCount )&& this.total > 0
         },
           set(checked){
         this.completeAll(checked)
@@ -83,7 +93,7 @@ export default {
         date: new Date()
       }
       this.todos.push(todoItem)
-      this.text=''     
+      this.text='' 
        }    
   ,
     onDel(data){
@@ -99,10 +109,10 @@ export default {
         } return todo
       })
     },
-    updateCheck(data,isChecked){
+    updateCheck(data){
       this.todos = this.todos.map((todo)=>{
         if(todo.id === data){
-          todo.checked = isChecked
+          todo.checked = !todo.checked
         }
         return todo
       })
@@ -111,8 +121,9 @@ export default {
       this.filter = filter
     },
    completeAll(checked){
-    this.todos.forEach((todo)=>{
+    this.todos = this.todos.map((todo)=>{
         todo.checked = checked
+        return todo
     })
    },
    clearCompleted(){
@@ -140,32 +151,46 @@ export default {
   },  
 }
 </script>
-<style scoped>
+<style lang="scss">
+@import "../scss/style";
 .todo-container{
-  width:fit-content
+  flex-grow: 1;
+  min-width: 700px;
 }
 .todo-li{
   padding: 0;
+  max-height: 700px;
 }
 .todo-item{
   list-style-type: none;
 }
+.todo-included{
+  padding: 24px 28px
+}
 .form{
   display: flex;
-  align-items: center;
-  height: 25px;
-  gap:0.3rem
+  align-items: stretch;
 }
 .input{
-  border-radius: 6px;
-  height: 100%;
-  max-width: 70%;
+  flex-grow: 1;
+  border: unset;  
 }
 .btn{
-  height: 100%;
-  width: 20px;
+  border-radius: unset;
+  width: 60px;
   cursor: pointer;
   text-align: center;
-  padding: 0
 }
+.filters{
+  gap: 1rem;
+    display: flex;
+    padding: 1rem;
+    background-color: #44544e;
+    align-items: center;
+    justify-content: center;
+    button{
+      color: white;
+    }
+}
+
 </style>

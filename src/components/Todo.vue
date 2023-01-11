@@ -1,31 +1,51 @@
 <template>
-    <div>
-    <div v-if="!isModifying">
-    <div class="todoWrapper">
-    <input type="checkbox" @click="updateCheck" :checked="todo.checked">
+    <div class="todo-item" ref="todo" @mouseenter="setIsHover" @mouseleave="setIsLeave">
+    <div class="item__inner item--edit">
+    <div class="todoWrapper item__inner itmer--normal">
+        <label>
+            <input type="checkbox" @click="updateCheck" :checked="todo.checked">
+    <span class="material-symbols-outlined icon">
+      check
+    </span>
+  </label>   
+    <div v-if="!isModifying" class="content">
     <div :class="{'checked':todo.checked}" >{{ todo.text }}</div>
-    <button @click="modifyText">수정하기</button>
-    <button class="delBtn" @click="onDelete">X</button>
-    <div>{{ getDate  }}</div>
+    <div class="date">{{ getDate }}</div>
+    </div>
+    <div v-show="isModifying"  class="content">
+        <input class="modify-input" type="text" @keydown.enter="updateTodos" @blur="updateTodos" :value="todo.text" ref="input"/>
+    </div>
+    <button  @click="modifyText" class="modify-btn" v-show="isHovered">
+        <span class="material-symbols-outlined">
+        edit
+        </span>
+    </button>
+    <button class="delBtn" @click="onDelete" v-show="isHovered">
+        <span class="material-symbols-outlined">
+            delete
+        </span>
+    </button>
     </div>
     </div>
-    <div v-show="isModifying">
-        <input type="text" @keydown.enter="updateTodos" @blur="updateTodos" :value="todo.text" ref="input"/>
-    </div>
+    
     </div>
     
 </template>
 <script>
 import dayjs from 'dayjs'
+import scrollTo from 'scroll-to'
 export default{
     name:'To-do',
     props:{
        todo:Object
     }, 
+    mounted(){
+        this.$refs.todo.scrollIntoView()
+        },
     data(){
         return{
-            isChecked:this.todo.checked,
             isModifying:false,
+            isHovered:false,
             date:this.todo.date
         }
     },
@@ -45,17 +65,30 @@ export default{
 
         },
         updateCheck(){
-            this.$emit('updateChecks',this.todo.id,!this.isChecked)
-            this.isChecked = ! this.isChecked
-            
-        }
-       
+            this.$emit('updateChecks',this.todo.id)
+                    
+        },
+        scrollToTop(){
+            scrollTo(0,0,{
+                duration:1000
+            })
+        },
+        scrollToBottom(){
+            scrollTo()
+        } ,
+        setIsHover(){
+            this.isHovered = true
+        },
+        setIsLeave(){
+            this.isHovered = false
+        }     
     }  ,
     computed:{
         getDate(){
             return dayjs(this.todo.date).format("YYYY년 MM월 DD일")
         }
-    } 
+    },
+    
 }
 </script>
 <style>
@@ -65,11 +98,26 @@ export default{
     color: red;
     font-weight: bolder;
 }
+
 .todoWrapper{
     display: flex;
     gap: 0.3rem;
+    align-items: center;
+    width:100%
     }
+.modify-btn{
+    margin-left: auto;
+}
+.content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
 .checked{
-    color: rgb(99, 83, 116);
+    color: rgb(167, 165, 170);
+}
+
+.date{
+    font-size: x-small;
 }
 </style>
