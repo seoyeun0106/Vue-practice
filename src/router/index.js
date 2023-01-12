@@ -1,7 +1,7 @@
 import TodoList from "../components/TodoList.vue";
 import About from "@/views/About"
 import {createRouter, createWebHashHistory} from 'vue-router'
-
+import Main from "@/views/Main"
 
 const routes =[
     {   
@@ -16,6 +16,9 @@ const routes =[
     },{
         path:"/todo/",
         redirect:"/todo/all"
+    },{
+        path:"/",
+        component:Main
     }
 ];
 
