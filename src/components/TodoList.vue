@@ -2,9 +2,9 @@
 <div class="todo-container todo-app">
   <div class="todo-app_actions">
     <div class="filters">
-      <router-link to="all" class="link-btn">모든 항목({{ total }})</router-link>
-      <router-link to="active" class="link-btn">해야 할 항목({{ activeCount }})</router-link>
-      <router-link to="completed" class="link-btn">완료된 항목({{ completedCount }})</router-link>
+      <router-link to="all" class="link-btn">모든 항목({{total}})</router-link>
+      <router-link to="active" class="link-btn">해야 할 항목({{activeCount}})</router-link>
+      <router-link to="completed" class="link-btn">완료된 항목({{completedCount}})</router-link>
       </div>
   </div>
   <ul class="todo-li todo-app__list">
@@ -24,7 +24,7 @@
   </div>
 </div>
     <li v-for="todo in filteredTodos" :key="todo.id" class="todo-item">
-    <Todo :todo="todo" @delete-func="onDel" @update-func="updateTodo" @update-checks="updateCheck"/>
+    <Todo :todo="todo"/>
     </li>
   </ul>
   <form class="form" @submit.prevent="onSubmit">
@@ -34,9 +34,9 @@
 </div>
 
 </template>
-
 <script>
 import Todo from './Todo.vue';
+import {mapState, mapGetters,mapMutations,mapActions} from "vuex"
 export default {
   name: 'Todo-List',
   components:{
@@ -45,45 +45,44 @@ export default {
   data(){
     return{
       id:1,
-      KEY:'todos',
-      todos:[{id:0,text:"UI 구현 완료하기",checked:true,date: new Date()},
-            {id:1,text:"API post후 res받아오기",checked:false,date: new Date()}],
       text:'',
+      storedTodo : this.$store.state.todos,
+      getters: this.$store.getters,
       filter:"all",
       checked:false,
     }
   },
   computed: {
-    filteredTodos(){
-      switch(this.$route.params.id){
-        case 'all':
-        default:
-          return this.todos
-        case 'active':
-          return this.todos.filter(todo=>!todo.checked)
-        case 'completed':
-          return this.todos.filter(todo=>todo.checked)
-        }
-      },
-      total(){
-        return this.todos.length
-      },
-      activeCount(){
-        return this.todos.filter(todo=>!todo.checked).length
-      },
-      completedCount(){
-        return this.total - this.activeCount
-      },
-      allDone:{
-          get(){
+    ...mapState('todoApp',[
+      'todos'
+    ]),
+    ...mapGetters('todoApp',[
+      'total', 'activeCount', 'completedCount','filteredTodos'
+    ]),
+    allDone:{
+      get(){
         return (this.total === this.completedCount )&& this.total > 0
-        },
-          set(checked){
+      },
+      set(checked){
         this.completeAll(checked)
         }
       },      
 },
+watch: {
+    $route () {
+      this.updateFilter(this.$route.params.id)
+    }
+  },
   methods: {
+    ...mapMutations('todoApp',[
+      'updateCheck',
+      'updateFilter'
+    ]),
+    ...mapActions('todoApp',[
+      'updateCheck',
+      'completeAll',
+      'clearCompleted'
+    ]),
     onSubmit(e){
       this.id++;
       const todoItem = {
@@ -92,63 +91,21 @@ export default {
         checked: this.checked,
         date: new Date()
       }
-      this.todos.push(todoItem)
+      this.$store.dispatch("todoApp/createTodo",todoItem)
       this.text='' 
        }    
   ,
-    onDel(data){
-      this.todos = this.todos.filter(({id})=>{
-        return id !==data
-      })
-    },
-    updateTodo(data,text){
-      this.todos = this.todos.map((todo)=>{
-         if(todo.id === data){
-           todo.text = text;
-           todo.date = new Date()
-        } return todo
-      })
-    },
-    updateCheck(data){
-      this.todos = this.todos.map((todo)=>{
-        if(todo.id === data){
-          todo.checked = !todo.checked
-        }
-        return todo
-      })
-    },
    completeAll(checked){
-    this.todos = this.todos.map((todo)=>{
-        todo.checked = checked
-        return todo
-    })
+      this.$store.dispatch("todoApp/completeAll",checked);
    },
    clearCompleted(){
-      this.todos = this.todos.filter((todo)=>{return !todo.checked})      
+      this.$store.dispatch("todoApp/clearCompleted");
       }   
   },
-  watch:{
-      todos:{
-        deep:true,
-        handler(newTodo){
-          window.localStorage.setItem(this.KEY,JSON.stringify(newTodo))
-        }   
-    },
-    getTodo:{
-      handler(){
-        const stringTodo=localStorage.getItem(this.KEY);
-        const parsedTodo = JSON.parse(stringTodo)
-        if(stringTodo && parsedTodo.length){
-        this.todos = parsedTodo;
-        this.id=this.todos[this.todos.length-1].id
-        }
-      },
-      immediate:true
-    }
-  }, 
-  mounted(){
-        console.log(this.$route);
-        },  
+mounted(){
+    this.$store.dispatch("todoApp/getLocalStorage");
+  },
+
 }
 </script>
 <style lang="scss">

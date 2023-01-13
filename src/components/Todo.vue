@@ -33,14 +33,14 @@
 </template>
 <script>
 import dayjs from 'dayjs'
-import scrollTo from 'scroll-to'
 export default{
     name:'To-do',
     props:{
        todo:Object
     }, 
     mounted(){
-        this.$refs.todo.scrollIntoView()
+        this.$refs.todo.scrollIntoView();
+        console.log(this.todo)
         },
     data(){
         return{
@@ -51,7 +51,7 @@ export default{
     },
     methods:{
         onDelete(){
-            this.$emit('deleteFunc',this.todo.id)
+        this.$store.dispatch("todoApp/deleteTodo",this.todo.id)
         },
         modifyText(){
             this.isModifying = true;
@@ -60,22 +60,12 @@ export default{
             })    
         },
         updateTodos(e){
-            this.$emit('updateFunc',this.todo.id,e.target.value)
+            this.$store.dispatch('todoApp/updateInput',{id:this.todo.id,text:e.target.value})
             this.isModifying = false;
-
         },
         updateCheck(){
-            this.$emit('updateChecks',this.todo.id)
-                    
+            this.$store.dispatch('todoApp/updateCheck',this.todo.id)                    
         },
-        scrollToTop(){
-            scrollTo(0,0,{
-                duration:1000
-            })
-        },
-        scrollToBottom(){
-            scrollTo()
-        } ,
         setIsHover(){
             this.isHovered = true
         },
@@ -88,7 +78,7 @@ export default{
             return dayjs(this.todo.date).format("YYYY년 MM월 DD일")
         }
     },
-    
+
 }
 </script>
 <style>
