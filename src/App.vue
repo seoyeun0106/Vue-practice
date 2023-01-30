@@ -1,16 +1,20 @@
 <template>
-<TodoList></TodoList>
+  <div>
+    <router-link to="/" class="to-home">
+    <span class="material-symbols-outlined homeLink">
+    home
+    </span>
+  </router-link>
+    <router-view />
+  </div>
 </template>
 <script>
-import TodoList from './components/TodoList.vue'
 export default {
   name: 'App',
-  components: {
-    TodoList
-  }
 }
 </script>
-
-<style>
-
+<style lang="scss">
+  .to-home.router-link-exact-active{
+    display: none ;
+  }
 </style>

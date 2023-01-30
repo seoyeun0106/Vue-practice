@@ -9,11 +9,14 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.7",
     "reset-css": "^5.0.1",
     "sass": "^1.57.1",
     "sass-loader": "^13.2.0",
     "styled-reset": "^4.4.4",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-router": "^4.0.13",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
